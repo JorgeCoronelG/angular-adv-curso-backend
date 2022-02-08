@@ -13,7 +13,11 @@ app.use(cors());
 // Lectura y parseo del body
 app.use(express.json());
 
+// Base de datos
 dbConnection();
+
+// Directorio público
+app.use(express.static('public'));
 
 // Rutas
 app.use('/api/login', require('./routes/auth'));
