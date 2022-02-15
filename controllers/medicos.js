@@ -5,7 +5,7 @@ const getMedicos = async (req, res = response) => {
     try {
         const medicos = await Medico.find()
             .populate('usuario', 'nombre img')
-            .populate('medico', 'nombre img');
+            .populate('hospital', 'nombre img');
 
         res.json({
             ok: true,
@@ -84,7 +84,7 @@ const borrarMedico = async (req, res = response) => {
         const medico = await Medico.findById(id);
 
         if (!medico) {
-            res.status(404).json({
+            return res.status(404).json({
                 ok: false,
                 msg: 'No existe el registro.'
             });
@@ -105,9 +105,38 @@ const borrarMedico = async (req, res = response) => {
     }
 };
 
+const obtenerMedico = async (req, res = response) => {
+    const { id } = req.params;
+
+    try {
+        const medico = await Medico.findById(id)
+            .populate('usuario', 'nombre img')
+            .populate('hospital', 'nombre img');
+
+        if (!medico) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No existe el registro.'
+            });
+        }
+
+        res.json({
+            ok: true,
+            medico
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Consulte con el administrador.'
+        });
+    }
+};
+
 module.exports = {
     getMedicos,
     crearMedico,
     actualizarMedico,
-    borrarMedico
+    borrarMedico,
+    obtenerMedico
 };
